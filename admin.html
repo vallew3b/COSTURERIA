@@ -6,62 +6,14 @@
     <title>Panel de Control | Ventas Web Tuleto</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        .admin-main {
-            max-width: 1400px;
-            margin: 2rem auto;
-        }
-        .table-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 0.5rem;
-        }
-        th {
-            text-align: left;
-            padding: 1rem;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--border);
-        }
-        td {
-            padding: 1.25rem 1rem;
-            vertical-align: middle;
-            background: white;
-        }
-        tr:hover td {
-            background: #f8fafc;
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.35rem 0.85rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
+        .admin-main { max-width: 1400px; margin: 2rem auto; padding: 0 5%; }
+        .table-card { background: white; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); padding: 1.5rem; overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 0.5rem; }
+        th { text-align: left; padding: 1rem; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 1.25rem 1rem; vertical-align: middle; background: white; }
+        .badge { display: inline-block; padding: 0.35rem 0.85rem; border-radius: 100px; font-size: 0.75rem; font-weight: 700; }
         .badge-pending { background: #fef3c7; color: #92400e; }
         .badge-done { background: #d1fae5; color: #065f46; }
-        
-        .btn-process {
-            padding: 0.6rem 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .btn-process:hover { transform: scale(1.05); background: var(--accent); }
     </style>
 </head>
 <body>
@@ -78,50 +30,18 @@
             <h3>Monitor de Ventas Web</h3>
             <div class="line"></div>
         </div>
-
         <div class="table-card">
             <table>
                 <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Pedido</th>
-                        <th>Producto</th>
-                        <th>Información Cliente</th>
-                        <th>Cant.</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
+                    <tr><th>Fecha</th><th>Pedido</th><th>Producto</th><th>Cliente</th><th>Cant.</th><th>Total</th><th>Estado</th><th>Acción</th></tr>
                 </thead>
                 <tbody id="sales-body">
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
-                            Sincronizando con la base de datos...
-                        </td>
-                    </tr>
+                    <tr><td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">Cargando panel administrativo...</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
-
-    <footer>
-        <p>&copy; 2026 Tuleto ERP - Panel de Administración</p>
-    </footer>
-
     <script src="app.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', loadWebSales);
-        
-        window.addEventListener('scroll', () => {
-            const header = document.getElementById('main-header');
-            if (window.scrollY > 30) {
-                header.style.padding = '0.75rem 5%';
-                header.style.background = 'rgba(15, 23, 42, 0.95)';
-            } else {
-                header.style.padding = '1rem 5%';
-                header.style.background = 'rgba(15, 23, 42, 0.9)';
-            }
-        });
-    </script>
+    <script>document.addEventListener('DOMContentLoaded', loadWebSales);</script>
 </body>
 </html>

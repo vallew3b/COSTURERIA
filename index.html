@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tuleto Store | Exclusive Fashion</title>
-    <meta name="description" content="Descubre la elegancia y calidad superior en cada prenda de Tuleto Store. Diseños exclusivos para quienes buscan lo mejor.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header id="main-header">
@@ -28,67 +28,85 @@
         </div>
 
         <div id="product-list" class="product-grid">
-            <!-- Los productos se cargarán aquí dinámicamente -->
             <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
                 <p>Preparando catálogo exclusivo...</p>
             </div>
         </div>
     </main>
 
-    <!-- Purchase Modal -->
     <div id="purchase-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-product-name">Finalizar Compra</h3>
+                <h3 id="modal-title">Finalizar Compra</h3>
                 <p id="modal-product-price" style="color: var(--accent); font-weight: 700; font-size: 1.25rem;"></p>
             </div>
             
             <form id="purchase-form">
-                <input type="hidden" id="form-product-id">
-                
-                <div class="form-group">
-                    <label for="form-name">Nombre Completo</label>
-                    <input type="text" id="form-name" required placeholder="Ej. Paola Valle">
+                <div id="step-1">
+                    <input type="hidden" id="form-product-id">
+                    <div class="form-group">
+                        <label for="form-name"><i class="fas fa-user"></i> Nombre Completo</label>
+                        <input type="text" id="form-name" required placeholder="Ej. Paola Valle">
+                    </div>
+                    <div class="form-group">
+                        <label for="form-email"><i class="fas fa-envelope"></i> Correo Electrónico</label>
+                        <input type="email" id="form-email" required placeholder="ejemplo@correo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="form-quantity"><i class="fas fa-layer-group"></i> Cantidad</label>
+                        <input type="number" id="form-quantity" value="1" min="1" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-buy" onclick="showStep(2)">Siguiente: Pago <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" onclick="closeModal()" class="btn-buy btn-secondary">Cancelar</button>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="form-email">Correo Electrónico</label>
-                    <input type="email" id="form-email" required placeholder="ejemplo@correo.com">
-                </div>
-                
-                <div class="form-group">
-                    <label for="form-quantity">Cantidad a Solicitar</label>
-                    <input type="number" id="form-quantity" value="1" min="1" required>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="submit" class="btn-buy">Confirmar Pedido</button>
-                    <button type="button" onclick="closeModal()" class="btn-buy btn-secondary">Cancelar</button>
+
+                <div id="step-2" style="display: none;">
+                    <div style="background: #f1f5f9; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            <i class="fas fa-shield-alt"></i> Pago Seguro Encriptado
+                        </p>
+                        <div class="form-group">
+                            <label>Número de Tarjeta</label>
+                            <input type="text" placeholder="**** **** **** 1234">
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <div class="form-group" style="flex: 1;"><label>Vencimiento</label><input type="text" placeholder="MM/AA"></div>
+                            <div class="form-group" style="flex: 1;"><label>CVC</label><input type="text" placeholder="***"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-buy" style="background: var(--success);"><i class="fas fa-check-circle"></i> Confirmar y Pagar</button>
+                        <button type="button" class="btn-buy btn-secondary" onclick="showStep(1)">Regresar</button>
+                    </div>
                 </div>
             </form>
+
+            <div id="success-screen" style="display: none; text-align: center; padding: 2rem 0;">
+                <div style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;"><i class="fas fa-check-double"></i></div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">¡Pedido Procesado!</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">La notificación ha sido enviada exitosamente a tu sistema **Tuleto ERP (.exe)**.</p>
+                <button type="button" class="btn-buy" onclick="closeModal()">Entendido</button>
+            </div>
         </div>
     </div>
 
     <footer>
         <h4>Tuleto Store</h4>
         <p>&copy; 2026 Tuleto ERP. Todos los derechos reservados.</p>
-        <p style="margin-top: 1rem; font-size: 0.8rem;">Sincronizado en tiempo real con inventario local.</p>
+        <div id="connection-status" style="margin-top: 1rem; font-size: 0.75rem;">
+            Sincronizando...
+        </div>
     </footer>
 
     <script src="app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', loadProducts);
-        
-        // Efecto scroll en header
         window.addEventListener('scroll', () => {
             const header = document.getElementById('main-header');
-            if (window.scrollY > 50) {
-                header.style.padding = '0.75rem 5%';
-                header.style.background = 'rgba(15, 23, 42, 0.95)';
-            } else {
-                header.style.padding = '1rem 5%';
-                header.style.background = 'rgba(15, 23, 42, 0.9)';
-            }
+            if (window.scrollY > 50) { header.style.padding = '0.75rem 5%'; header.style.background = 'rgba(15, 23, 42, 0.95)'; }
+            else { header.style.padding = '1rem 5%'; header.style.background = 'rgba(15, 23, 42, 0.9)'; }
         });
     </script>
 </body>

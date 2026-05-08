@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuleto Store | Exclusive Fashion</title>
+    <meta name="description" content="Descubre la elegancia y calidad superior en cada prenda de Tuleto Store. Diseños exclusivos para quienes buscan lo mejor.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header id="main-header">
+        <h1>Tuleto</h1>
+        <nav>
+            <a href="index.html">Catálogo</a>
+            <a href="admin.html">Gestión Web</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>Elegancia en cada costura</h2>
+        <p>Prendas diseñadas con precisión artesanal y la más alta calidad de materiales. Tu estilo, nuestra pasión.</p>
+    </section>
+
+    <main>
+        <div class="section-title">
+            <h3>Colección Disponible</h3>
+            <div class="line"></div>
+        </div>
+
+        <div id="product-list" class="product-grid">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+                <p>Preparando catálogo exclusivo...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Purchase Modal -->
+    <div id="purchase-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-product-name">Finalizar Compra</h3>
+                <p id="modal-product-price" style="color: var(--accent); font-weight: 700; font-size: 1.25rem;"></p>
+            </div>
+            
+            <form id="purchase-form">
+                <input type="hidden" id="form-product-id">
+                
+                <div class="form-group">
+                    <label for="form-name">Nombre Completo</label>
+                    <input type="text" id="form-name" required placeholder="Ej. Paola Valle">
+                </div>
+                
+                <div class="form-group">
+                    <label for="form-email">Correo Electrónico</label>
+                    <input type="email" id="form-email" required placeholder="ejemplo@correo.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="form-quantity">Cantidad a Solicitar</label>
+                    <input type="number" id="form-quantity" value="1" min="1" required>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="submit" class="btn-buy">Confirmar Pedido</button>
+                    <button type="button" onclick="closeModal()" class="btn-buy btn-secondary">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <h4>Tuleto Store</h4>
+        <p>&copy; 2026 Tuleto ERP. Todos los derechos reservados.</p>
+        <p style="margin-top: 1rem; font-size: 0.8rem;">Sincronizado en tiempo real con inventario local.</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', loadProducts);
+        
+        // Efecto scroll en header
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 50) {
+                header.style.padding = '0.75rem 5%';
+                header.style.background = 'rgba(15, 23, 42, 0.95)';
+            } else {
+                header.style.padding = '1rem 5%';
+                header.style.background = 'rgba(15, 23, 42, 0.9)';
+            }
+        });
+    </script>
+</body>
+</html>

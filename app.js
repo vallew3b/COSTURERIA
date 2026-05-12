@@ -1,10 +1,5 @@
 // Función para obtener una imagen dinámica basada en el nombre del producto
-function getDynamicImage(productName, category) {
-    // Limpiamos el nombre para la búsqueda
-    const query = encodeURIComponent(`${productName} ${category || ''}`);
-    // Usamos un servicio que busca imágenes de alta calidad según el texto
-    return `https://loremflickr.com/800/800/clothing,apparel,${query}/all`;
-}
+
 
 // Funciones para la Tienda
 async function loadProducts() {
@@ -54,11 +49,24 @@ function updateStatus(connected) {
         : '<span class="status-dot" style="background: #ef4444"></span> Error: Servidor Desconectado';
 }
 
+function getProductImage(product) {
+    if (product.imagen) {
+        // Si la imagen es Base64 pero no tiene el prefijo, se lo agregamos
+        if (product.imagen.length > 100 && !product.imagen.startsWith('data:')) {
+            return `data:image/jpeg;base64,${product.imagen}`;
+        }
+        return product.imagen;
+    }
+    // Si no hay imagen, usamos una de respaldo basada en el ID para consistencia
+    const query = encodeURIComponent(`${product.nombre_producto} ${product.categoria || ''}`);
+    return `https://loremflickr.com/800/800/clothing,apparel,${query}/all`;
+}
+
 function renderProducts(products) {
     const list = document.getElementById('product-list');
     list.innerHTML = products.map(p => {
-        // Jalar imagen basada en el NOMBRE REAL del producto de tu DB
-        const imageUrl = getDynamicImage(p.nombre_producto, p.categoria);
+        // Jalar imagen basada en el NOMBRE REAL del producto de tu DB o la imagen guardada
+        const imageUrl = getProductImage(p);
         
         return `
         <div class="product-card">

@@ -19,6 +19,14 @@ const mockProducts = [
 ];
 
 function getProductImage(product) {
+    if (product.imagen) {
+        // Si la imagen es Base64 pero no tiene el prefijo, se lo agregamos
+        if (product.imagen.length > 100 && !product.imagen.startsWith('data:')) {
+            return `data:image/jpeg;base64,${product.imagen}`;
+        }
+        return product.imagen;
+    }
+    // Si no hay imagen, usamos una de respaldo basada en el ID para consistencia
     const index = product.id_producto % fallbackImages.length;
     return fallbackImages[index];
 }

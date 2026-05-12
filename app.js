@@ -1,13 +1,18 @@
 // Función para obtener una imagen dinámica basada en el nombre del producto
 
 
+// Configuración de API dinámica para GitHub Pages vs Local
+const API_URL = window.location.hostname.includes('github.io') 
+    ? 'https://d788af96b530ff93-79-143-88-223.serveousercontent.com' 
+    : '';
+
 // Funciones para la Tienda
 async function loadProducts() {
     const list = document.getElementById('product-list');
     if (!list) return;
 
     try {
-        const res = await fetch('/api/products');
+        const res = await fetch(`${API_URL}/api/products`);
         if (!res.ok) throw new Error('Servidor no disponible');
         
         const products = await res.json();
@@ -136,7 +141,7 @@ if (purchaseForm) {
                 email: document.getElementById('form-email').value
             };
 
-            const res = await fetch('/api/purchase', {
+            const res = await fetch(`${API_URL}/api/purchase`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

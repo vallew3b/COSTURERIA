@@ -1,3 +1,8 @@
+// Configuración de API dinámica para GitHub Pages vs Local
+const API_URL = window.location.hostname.includes('github.io') 
+    ? 'https://d788af96b530ff93-79-143-88-223.serveousercontent.com' 
+    : '';
+
 // Imágenes premium de respaldo (Galería Tuleto)
 const fallbackImages = [
     'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80&w=800',
@@ -37,7 +42,7 @@ async function loadProducts() {
     if (!list) return;
 
     try {
-        const res = await fetch('/api/products');
+        const res = await fetch(`${API_URL}/api/products`);
         if (!res.ok) throw new Error('Servidor no disponible');
         
         const products = await res.json();
@@ -126,7 +131,7 @@ if (purchaseForm) {
             // Simulamos una demora de red para el pago
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            const res = await fetch('/api/purchase', {
+            const res = await fetch(`${API_URL}/api/purchase`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -161,7 +166,7 @@ async function loadWebSales() {
     if (!body) return;
 
     try {
-        const res = await fetch('/api/web-sales');
+        const res = await fetch(`${API_URL}/api/web-sales`);
         const sales = await res.json();
         body.innerHTML = sales.map(s => `
             <tr>

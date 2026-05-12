@@ -1,20 +1,20 @@
-require('dotenv').config();
 const mysql = require('mysql2/promise');
 const { Client } = require('ssh2');
+require('dotenv').config();
 
 const sshConfig = {
-    host: process.env.SSH_HOST,
+    host: process.env.SSH_HOST || '79.143.88.223',
     port: parseInt(process.env.SSH_PORT || '22'),
-    username: process.env.SSH_USER,
-    password: process.env.SSH_PASS,
+    username: process.env.SSH_USER || 'root',
+    password: process.env.SSH_PASS || 'Parkourwhat88',
     readyTimeout: 30000
 };
 
 const dbConfig = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME
+    host: process.env.DB_HOST || '127.0.0.1',
+    user: process.env.DB_USER || 'paolovalle',
+    password: process.env.DB_PASS || 'Parkourwhat88@AldoWeb&PeresPeres',
+    database: process.env.DB_NAME || 'Tuletos'
 };
 
 let connection;
@@ -24,7 +24,8 @@ async function initDB() {
     return new Promise((resolve, reject) => {
         const sshClient = new Client();
         sshClient.on('ready', () => {
-            sshClient.forwardOut('127.0.0.1', 12345, dbConfig.host, 3306, async (err, stream) => {
+            // Usamos el estilo de tu .exe para la conexión
+            sshClient.forwardOut('127.0.0.1', 0, dbConfig.host, 3306, async (err, stream) => {
                 if (err) {
                     sshClient.end();
                     return reject(err);

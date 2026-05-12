@@ -3,7 +3,7 @@
 
 // Configuración de API dinámica para GitHub Pages vs Local
 const API_URL = window.location.hostname.includes('github.io') 
-    ? 'https://d788af96b530ff93-79-143-88-223.serveousercontent.com' 
+    ? 'https://chubby-mammals-scream.loca.lt' 
     : '';
 
 // Funciones para la Tienda

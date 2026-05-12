@@ -3,42 +3,27 @@ const API_URL = window.location.hostname.includes('github.io')
     ? 'https://d788af96b530ff93-79-143-88-223.serveousercontent.com' 
     : '';
 
-// Imágenes premium de respaldo (Galería Tuleto)
+// Imágenes premium de respaldo
 const fallbackImages = [
     'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80&w=800',
     'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1539109132314-347f85417bd4?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1554412933-514a83d2f3c8?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1475180098004-caaa744179a5?auto=format&fit=crop&q=80&w=800',
-    'https://images.unsplash.com/photo-1537832816519-689ad163238b?auto=format&fit=crop&q=80&w=800'
-];
-
-// Datos de simulación en caso de que el servidor no esté disponible (ej. GitHub Pages)
-const mockProducts = [
-    { id_producto: 1, nombre_producto: "Vestido Gala 'Nocturno'", precio_venta: 1250, descripcion: "Elegancia pura para tus eventos más exclusivos.", categoria: "Gala", stock_actual: 5 },
-    { id_producto: 2, nombre_producto: "Blazer Ejecutivo 'Siena'", precio_venta: 890, descripcion: "Corte perfecto y materiales de primera calidad.", categoria: "Oficina", stock_actual: 8 },
-    { id_producto: 3, nombre_producto: "Pantalón Casual 'Lino'", precio_venta: 450, descripcion: "Comodidad y frescura sin perder el estilo.", categoria: "Casual", stock_actual: 12 }
+    'https://images.unsplash.com/photo-1539109132314-347f85417bd4?auto=format&fit=crop&q=80&w=800'
 ];
 
 function getProductImage(product) {
     if (product.imagen) {
-        // Si la imagen es Base64 pero no tiene el prefijo, se lo agregamos
         if (product.imagen.length > 100 && !product.imagen.startsWith('data:')) {
             return `data:image/jpeg;base64,${product.imagen}`;
         }
         return product.imagen;
     }
-    // Si no hay imagen, usamos una de respaldo basada en el ID para consistencia
     const index = product.id_producto % fallbackImages.length;
     return fallbackImages[index];
 }
 
-// Funciones para la Tienda
 async function loadProducts() {
     const list = document.getElementById('product-list');
+    const status = document.getElementById('connection-status');
     if (!list) return;
 
     try {
@@ -46,44 +31,58 @@ async function loadProducts() {
         if (!res.ok) throw new Error('Servidor no disponible');
         
         const products = await res.json();
-        renderProducts(products);
-        document.getElementById('connection-status').innerHTML = '<span class="status-dot" style="background: var(--success)"></span> Conectado a Tuleto DB';
-    } catch (error) {
-        console.warn('Usando datos de simulación (Modo Demo)');
-        renderProducts(mockProducts);
-        document.getElementById('connection-status').innerHTML = '<span class="status-dot" style="background: var(--warning)"></span> Modo Simulación (Sin Servidor)';
-    }
-}
+        
+        if (products.length === 0) {
+            list.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 10rem;">
+                    <p style="font-size: 1.5rem; color: var(--text-muted); font-weight: 700;">
+                        Todas nuestras piezas exclusivas han sido adquiridas.<br>
+                        <span style="font-size: 1rem; font-weight: 400;">Pronto tendremos nuevas creaciones.</span>
+                    </p>
+                </div>`;
+            return;
+        }
 
-function renderProducts(products) {
-    const list = document.getElementById('product-list');
-    if (products.length === 0) {
-        list.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 4rem;"><p>No hay existencias disponibles.</p></div>`;
-        return;
-    }
-
-    list.innerHTML = products.map(p => {
-        const imageUrl = getProductImage(p);
-        return `
-        <div class="product-card">
-            <img src="${imageUrl}" alt="${p.nombre_producto}" class="product-image">
-            <div class="product-info">
-                <span class="product-category">${p.categoria || 'Colección Exclusiva'}</span>
-                <h3 class="product-name">${p.nombre_producto}</h3>
-                <p class="product-description">${p.descripcion || 'Confección artesanal de alta gama.'}</p>
-                <div class="product-meta">
-                    <div class="price-tag">
-                        <span class="price-label">Precio</span>
-                        <span class="price-value">$${parseFloat(p.precio_venta).toLocaleString()}</span>
-                    </div>
-                    <div class="stock-tag">${p.stock_actual} en stock</div>
+        list.innerHTML = products.map((p, index) => {
+            const imageUrl = getProductImage(p);
+            return `
+            <div class="product-card" style="animation-delay: ${index * 0.1}s">
+                <div class="product-image-container">
+                    <img src="${imageUrl}" alt="${p.nombre_producto}" class="product-image">
+                    <div class="product-badge">Colección 2026</div>
                 </div>
-                <button class="btn-buy" onclick="openModal(${JSON.stringify(p).replace(/"/g, '&quot;')})">
-                    Comprar Ahora
-                </button>
+                <div class="product-info">
+                    <span class="product-category">${p.categoria || 'Alta Costura'}</span>
+                    <h3 class="product-name">${p.nombre_producto}</h3>
+                    <p class="product-description">${p.descripcion || 'Una pieza única confeccionada con los materiales más finos de nuestro taller.'}</p>
+                    <div class="product-meta">
+                        <div class="price-tag">
+                            <span class="price-label">Inversión</span>
+                            <span class="price-value">$${parseFloat(p.precio_venta).toLocaleString()}</span>
+                        </div>
+                        <div class="stock-tag">${p.stock_actual} disponibles</div>
+                    </div>
+                    <button class="btn-buy" onclick='openModal(${JSON.stringify(p).replace(/'/g, "&apos;")})'>
+                        Ver Detalles <i class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-    `}).join('');
+        `}).join('');
+
+        if (status) {
+            status.innerHTML = '<span class="status-dot" style="background: var(--success); box-shadow: 0 0 10px var(--success);"></span> <span style="color: var(--primary)">Sincronizado con Tuleto ERP</span>';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        if (status) {
+            status.innerHTML = '<span class="status-dot" style="background: #ef4444;"></span> <span style="color: #ef4444">Error de Conexión Local</span>';
+        }
+        list.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 10rem;">
+                <p style="color: #ef4444; font-size: 1.5rem; font-weight: 800;">Error de Sincronización</p>
+                <p style="color: var(--text-muted); margin-top: 1rem;">Asegúrate de que tu servidor local (server.js) esté encendido y el túnel de Serveo esté activo.</p>
+            </div>`;
+    }
 }
 
 function openModal(product) {
@@ -94,10 +93,8 @@ function openModal(product) {
     document.getElementById('form-quantity').max = product.stock_actual;
     document.getElementById('form-quantity').value = 1;
     
-    // Resetear modal
     document.getElementById('purchase-form').style.display = 'block';
     document.getElementById('success-screen').style.display = 'none';
-    showStep(1);
     
     modal.style.display = 'flex';
 }
@@ -117,7 +114,8 @@ if (purchaseForm) {
         e.preventDefault();
         
         const btnSubmit = e.target.querySelector('button[type="submit"]');
-        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando Pago...';
+        const originalText = btnSubmit.innerHTML;
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
         btnSubmit.disabled = true;
 
         const data = {
@@ -128,9 +126,6 @@ if (purchaseForm) {
         };
 
         try {
-            // Simulamos una demora de red para el pago
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
             const res = await fetch(`${API_URL}/api/purchase`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -138,48 +133,18 @@ if (purchaseForm) {
             });
 
             if (res.ok) {
-                showSuccess();
+                document.getElementById('purchase-form').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'block';
                 loadProducts(); 
             } else {
-                // Si falla el servidor (ej. en GitHub Pages), igual mostramos éxito en modo demo
-                console.warn('Servidor no respondió, pero simulamos éxito en Demo.');
-                showSuccess();
+                const err = await res.json();
+                alert('Error: ' + err.error);
             }
         } catch (error) {
-            console.error('Error de red, mostrando éxito simulado.');
-            showSuccess();
+            alert('Error de conexión con el servidor.');
         } finally {
-            btnSubmit.innerHTML = '<i class="fas fa-check-circle"></i> Confirmar y Pagar';
+            btnSubmit.innerHTML = originalText;
             btnSubmit.disabled = false;
         }
     });
-}
-
-function showSuccess() {
-    document.getElementById('purchase-form').style.display = 'none';
-    document.getElementById('success-screen').style.display = 'block';
-}
-
-// Admin y otras funciones
-async function loadWebSales() {
-    const body = document.getElementById('sales-body');
-    if (!body) return;
-
-    try {
-        const res = await fetch(`${API_URL}/api/web-sales`);
-        const sales = await res.json();
-        body.innerHTML = sales.map(s => `
-            <tr>
-                <td>${new Date(s.fecha_pedido).toLocaleDateString()}</td>
-                <td><span style="font-weight: 700;">#${s.id_pedido}</span></td>
-                <td>${s.nombre_producto}</td>
-                <td><strong>${s.nombre_cliente_web || 'Cliente'}</strong></td>
-                <td>${s.cantidad}</td>
-                <td>$${parseFloat(s.monto_total).toLocaleString()}</td>
-                <td><span class="badge ${s.procesado_web ? 'badge-done' : 'badge-pending'}">${s.procesado_web ? 'PROCESADA' : 'PENDIENTE'}</span></td>
-                <td>${!s.procesado_web ? `<button class="btn-process" onclick="processSale(${s.id_pedido}, true)">Procesar</button>` : '---'}</td>
-            </tr>`).join('');
-    } catch (error) {
-        body.innerHTML = '<tr><td colspan="8" style="text-align: center;">Sin conexión al servidor administrativo.</td></tr>';
-    }
 }
